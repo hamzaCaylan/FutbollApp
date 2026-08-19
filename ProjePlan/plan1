@@ -1,0 +1,1060 @@
+{
+  "version": 2,
+  "planName": "plan 1",
+  "pitch": {
+    "pitchImage": "assets/saha/Saha2.png",
+    "squadSize": 11,
+    "showBothTeams": false,
+    "sidesSwapped": false
+  },
+  "teams": {
+    "home": {
+      "color": 4279900698,
+      "formation": "f433"
+    },
+    "away": {
+      "color": 4292088596,
+      "formation": "f433"
+    }
+  },
+  "players": [
+    {
+      "id": "home-0",
+      "name": "Ali",
+      "number": 1,
+      "team": "home",
+      "position": "GK",
+      "x": 0.06,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-1",
+      "name": "Can",
+      "number": 2,
+      "team": "home",
+      "position": "LB",
+      "x": 0.4565277448304676,
+      "y": 0.10586297526005775,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-2",
+      "name": "Mehmet",
+      "number": 3,
+      "team": "home",
+      "position": "CB",
+      "x": 0.37696629070827625,
+      "y": 0.4602557760765153,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-3",
+      "name": "Deniz",
+      "number": 4,
+      "team": "home",
+      "position": "CB",
+      "x": 0.4336685528169192,
+      "y": 0.531457140375226,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-4",
+      "name": "Emre",
+      "number": 5,
+      "team": "home",
+      "position": "RB",
+      "x": 0.5818245793982336,
+      "y": 0.9117520724218118,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-5",
+      "name": "Burak",
+      "number": 6,
+      "team": "home",
+      "position": "CM",
+      "x": 0.3812870352289937,
+      "y": 0.35567986010775765,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-6",
+      "name": "Kaan",
+      "number": 7,
+      "team": "home",
+      "position": "CM",
+      "x": 0.5956394340446346,
+      "y": 0.3124075637915793,
+      "isCaptain": true,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-7",
+      "name": "Serkan",
+      "number": 8,
+      "team": "home",
+      "position": "CM",
+      "x": 0.6556063939812626,
+      "y": 0.5085624697175217,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-8",
+      "name": "Onur",
+      "number": 9,
+      "team": "home",
+      "position": "LW",
+      "x": 0.5571885709469572,
+      "y": 0.14257774185835728,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-9",
+      "name": "Cem",
+      "number": 10,
+      "team": "home",
+      "position": "ST",
+      "x": 0.7157647058287887,
+      "y": 0.22212038932455658,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-10",
+      "name": "Baris",
+      "number": 11,
+      "team": "home",
+      "position": "RW",
+      "x": 0.7055975263968448,
+      "y": 0.6562954857593873,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-sub-11",
+      "name": "Tolga",
+      "number": 12,
+      "team": "home",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-sub-12",
+      "name": "Yusuf",
+      "number": 13,
+      "team": "home",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-sub-13",
+      "name": "Kerem",
+      "number": 14,
+      "team": "home",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-sub-14",
+      "name": "Utku",
+      "number": 15,
+      "team": "home",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "home-sub-15",
+      "name": "Arda",
+      "number": 16,
+      "team": "home",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-0",
+      "name": "Selim",
+      "number": 1,
+      "team": "away",
+      "position": "GK",
+      "x": 0.94,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-1",
+      "name": "Fatih",
+      "number": 2,
+      "team": "away",
+      "position": "LB",
+      "x": 0.8,
+      "y": 0.15,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-2",
+      "name": "Murat",
+      "number": 3,
+      "team": "away",
+      "position": "CB",
+      "x": 0.84,
+      "y": 0.38,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-3",
+      "name": "Erhan",
+      "number": 4,
+      "team": "away",
+      "position": "CB",
+      "x": 0.84,
+      "y": 0.62,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-4",
+      "name": "Tarik",
+      "number": 5,
+      "team": "away",
+      "position": "RB",
+      "x": 0.8,
+      "y": 0.85,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-5",
+      "name": "Bora",
+      "number": 6,
+      "team": "away",
+      "position": "CM",
+      "x": 0.6799999999999999,
+      "y": 0.3,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-6",
+      "name": "Umut",
+      "number": 7,
+      "team": "away",
+      "position": "CM",
+      "x": 0.7,
+      "y": 0.5,
+      "isCaptain": true,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-7",
+      "name": "Volkan",
+      "number": 8,
+      "team": "away",
+      "position": "CM",
+      "x": 0.6799999999999999,
+      "y": 0.7,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-8",
+      "name": "Ege",
+      "number": 9,
+      "team": "away",
+      "position": "LW",
+      "x": 0.54,
+      "y": 0.15,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-9",
+      "name": "Devrim",
+      "number": 10,
+      "team": "away",
+      "position": "ST",
+      "x": 0.5800000000000001,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-10",
+      "name": "Sinan",
+      "number": 11,
+      "team": "away",
+      "position": "RW",
+      "x": 0.54,
+      "y": 0.85,
+      "isCaptain": false,
+      "onPitch": true,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-sub-11",
+      "name": "Ozan",
+      "number": 12,
+      "team": "away",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-sub-12",
+      "name": "Alper",
+      "number": 13,
+      "team": "away",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-sub-13",
+      "name": "Rasit",
+      "number": 14,
+      "team": "away",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-sub-14",
+      "name": "Ferhat",
+      "number": 15,
+      "team": "away",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    },
+    {
+      "id": "away-sub-15",
+      "name": "Metin",
+      "number": 16,
+      "team": "away",
+      "position": "SUB",
+      "x": 0.5,
+      "y": 0.5,
+      "isCaptain": false,
+      "onPitch": false,
+      "locked": false,
+      "substituted": false,
+      "card": "none"
+    }
+  ],
+  "ball": {
+    "x": 0.7397886539223455,
+    "y": 0.7523345347313237,
+    "inFront": true
+  },
+  "drawings": [
+    {
+      "tool": "ballPath",
+      "color": 4294956367,
+      "thickness": 4,
+      "points": [
+        {
+          "x": 0.10390253565768622,
+          "y": 0.5151028014416776
+        },
+        {
+          "x": 0.2779968551901743,
+          "y": 0.34425172018348627
+        },
+        {
+          "x": 0.4553721770998415,
+          "y": 0.4448722149410223
+        },
+        {
+          "x": 0.5555170364500792,
+          "y": 0.16577756389252948
+        },
+        {
+          "x": 0.6051096969096672,
+          "y": 0.9225456667758847
+        },
+        {
+          "x": 0.48968031893819336,
+          "y": 0.6571152113368283
+        },
+        {
+          "x": 0.6278290907290016,
+          "y": 0.36370105668414154
+        },
+        {
+          "x": 0.7397886539223455,
+          "y": 0.7523345347313237
+        },
+        {
+          "x": 0.602738708399366,
+          "y": 0.6667656454783748
+        },
+        {
+          "x": 0.8152424227416799,
+          "y": 0.6975958387942333
+        },
+        {
+          "x": 0.9002668135895404,
+          "y": 0.6665762205111402
+        },
+        {
+          "x": 0.8401780408082409,
+          "y": 0.3884133355176933
+        },
+        {
+          "x": 0.9279262826862124,
+          "y": 0.4431929882044561
+        }
+      ],
+      "controlPoint": null,
+      "segmentBends": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "waypointMessages": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "playerRuns": [
+        {
+          "playerId": "home-2",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.23520763173534073,
+              "y": 0.41837831749672344
+            },
+            {
+              "x": 0.2770837460380349,
+              "y": 0.3612231733289646
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-1",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.2418036846275753,
+              "y": 0.20507044560943644
+            },
+            {
+              "x": 0.3364482220681458,
+              "y": 0.13097968545216251
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-5",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.3696822999207607,
+              "y": 0.3282222722804718
+            },
+            {
+              "x": 0.3913957260301109,
+              "y": 0.2689783338794233
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-6",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.34709909865293187,
+              "y": 0.48922325524246396
+            },
+            {
+              "x": 0.48720409072900156,
+              "y": 0.47601982306684143
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-7",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.3602912044374009,
+              "y": 0.6913243365006553
+            },
+            {
+              "x": 0.4566969591917591,
+              "y": 0.6858822083879423
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-3",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.2167349692947702,
+              "y": 0.6243600507863696
+            },
+            {
+              "x": 0.27383679179873216,
+              "y": 0.6675745412844036
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-4",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.2502383369651347,
+              "y": 0.8357583142201835
+            },
+            {
+              "x": 0.348250544770206,
+              "y": 0.7912588057011796
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-10",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.4945244403724247,
+              "y": 0.7831544888597641
+            },
+            {
+              "x": 0.6220687648573693,
+              "y": 0.8382413171690695
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-9",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.48036041501584786,
+              "y": 0.5297857961992136
+            },
+            {
+              "x": 0.5381277238510301,
+              "y": 0.530773877785059
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-8",
+          "segmentIndex": 0,
+          "points": [
+            {
+              "x": 0.4980994948494453,
+              "y": 0.1890512368938401
+            },
+            {
+              "x": 0.5366698444928685,
+              "y": 0.18872358289646135
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-2",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.2770837460380349,
+              "y": 0.3612231733289646
+            },
+            {
+              "x": 0.32227491085578447,
+              "y": 0.3483320363695937
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-1",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.3364482220681458,
+              "y": 0.13097968545216251
+            },
+            {
+              "x": 0.3850318195324881,
+              "y": 0.17823353538663173
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-5",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.3913957260301109,
+              "y": 0.2689783338794233
+            },
+            {
+              "x": 0.4397781299524564,
+              "y": 0.3067097395150721
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-6",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.48720409072900156,
+              "y": 0.47601982306684143
+            },
+            {
+              "x": 0.4547159766244057,
+              "y": 0.442947247706422
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-3",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.27383679179873216,
+              "y": 0.6675745412844036
+            },
+            {
+              "x": 0.3324429229397781,
+              "y": 0.6096258600917431
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-7",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.4566969591917591,
+              "y": 0.6858822083879423
+            },
+            {
+              "x": 0.5589404219492868,
+              "y": 0.6307749017038008
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-9",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.5381277238510301,
+              "y": 0.530773877785059
+            },
+            {
+              "x": 0.638823543977813,
+              "y": 0.4262368938401048
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-8",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.5366698444928685,
+              "y": 0.18872358289646135
+            },
+            {
+              "x": 0.557398969889065,
+              "y": 0.1421045625819135
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-10",
+          "segmentIndex": 1,
+          "points": [
+            {
+              "x": 0.6220687648573693,
+              "y": 0.8382413171690695
+            },
+            {
+              "x": 0.6079325970681458,
+              "y": 0.6952049885321101
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-5",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.4397781299524564,
+              "y": 0.3067097395150721
+            },
+            {
+              "x": 0.38069532488114105,
+              "y": 0.35617525393184796
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-1",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.3850318195324881,
+              "y": 0.17823353538663173
+            },
+            {
+              "x": 0.45725101525356576,
+              "y": 0.10513085681520315
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-2",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.32227491085578447,
+              "y": 0.3483320363695937
+            },
+            {
+              "x": 0.3775195622028526,
+              "y": 0.4613880242463958
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-3",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.3324429229397781,
+              "y": 0.6096258600917431
+            },
+            {
+              "x": 0.43469257626782887,
+              "y": 0.5306663663171691
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-4",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.3869911351030111,
+              "y": 0.8129198066841415
+            },
+            {
+              "x": 0.5837955625990491,
+              "y": 0.9127518840104849
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-6",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.4547159766244057,
+              "y": 0.442947247706422
+            },
+            {
+              "x": 0.5970650505150554,
+              "y": 0.3110869921363041
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-9",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.638823543977813,
+              "y": 0.4262368938401048
+            },
+            {
+              "x": 0.7165430616085579,
+              "y": 0.22005549639580602
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-7",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.5589404219492868,
+              "y": 0.6307749017038008
+            },
+            {
+              "x": 0.6565842908082409,
+              "y": 0.5073261385976409
+            }
+          ],
+          "bends": [
+            null
+          ]
+        },
+        {
+          "playerId": "home-10",
+          "segmentIndex": 2,
+          "points": [
+            {
+              "x": 0.6079325970681458,
+              "y": 0.6952049885321101
+            },
+            {
+              "x": 0.7065855289223455,
+              "y": 0.655901867627785
+            }
+          ],
+          "bends": [
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "drawingColor": 4294956367,
+    "drawingThickness": 4,
+    "fullscreenShortcutKeyId": 4294969355,
+    "ballPathSpeed": 0.7499205123546512,
+    "hidePlayerRuns": true,
+    "jerseyImage": "assets/forma/forma0.png",
+    "ballImage": null,
+    "adBannerImageUrl": null,
+    "channelIconImageUrl": null
+  },
+  "camera": {
+    "zoom": 1,
+    "offsetX": 0,
+    "offsetY": 0
+  }
+}

@@ -1,0 +1,185 @@
+TAKTİK ÇİZİM AKIŞI - GELİŞTİRME TAVSİYELERİ
+=============================================
+Kod incelemesine dayanarak hazırlanmıştır (lib/state/tactics_controller.dart,
+lib/widgets/drawing_layer.dart, lib/widgets/tactics_toolbar.dart,
+lib/models/drawing.dart, lib/screens/pitch_screen.dart).
+
+
+1) [UYGULANDI] UNDO/REDO ARAYÜZE HİÇ BAĞLANMAMIŞ (en yüksek öncelik, en düşük efor)
+------------------------------------------------------------------
+UYGULANDI: Üst bara (Kaydet/Paylaş yanı) Geri Al/Yinele ikon butonları
+eklendi (canUndo/canRedo ile disabled), _handleKeyEvent'e Ctrl+Z (Cmd+Z),
+Ctrl+Shift+Z ve Ctrl+Y kısayolları eklendi. pitch_top_bar.dart ve
+pitch_screen.dart güncellendi.
+
+TacticsController içinde undo(), redo(), canUndo, canRedo tam olarak
+çalışır durumda (tactics_controller.dart:376-390 civarı, _snapshotDrawingsForUndo
+her çizim işleminden önce çağrılıyor). Ama pitch_screen.dart içinde hiçbir
+buton veya klavye kısayolu bunları çağırmıyor - grep sonucu boş çıktı.
+Kullanıcı yanlış bir ok/alan çizdiğinde tek çaresi "Sil" ile seçili şekli
+tek tek silmek. Bu, en çok fark yaratacak ve en az kod gerektiren iyileştirme:
+  - Sağ rail'e veya Taktikler toolbar'ına Undo/Redo ikonlu iki buton ekle,
+    controller.canUndo / controller.canRedo ile disabled durumunu yönet.
+  - _handleKeyEvent içine Ctrl+Z / Ctrl+Shift+Z (veya Ctrl+Y) kısayollarını
+    ekle (mevcut Escape/Enter işleyişinin yanına).
+
+
+2) [UYGULANDI] ÇİZGİ KALINLIĞI (drawingThickness) AYARLANAMIYOR
+------------------------------------------------------------------
+UYGULANDI: DrawingColorPicker'a renk paletinin yanına ayraçla ayrılmış,
+3 seviyeli (ince=2/orta=4/kalın=7) tıklanabilir nokta grubu eklendi;
+seçili seviye beyaz halka ile vurgulanıyor. drawing_color_picker.dart ve
+pitch_screen.dart güncellendi.
+
+controller.drawingThickness ve setDrawingThickness() mevcut ama hiçbir
+widget bunu çağırmıyor (DrawingColorPicker sadece renk seçtiriyor, kalınlık
+için karşılığı yok). Her çizim sabit thickness ile çiziliyor. DrawingColorPicker'ın
+yanına küçük bir Slider veya 3 seviyeli (ince/orta/kalın) buton grubu eklemek
+kullanıcıya baskı hattı ile hafif bir pas çizgisini görsel olarak ayırma
+imkanı verir.
+
+
+3) KLAVYE KISAYOLLARI ÇOK SINIRLI
+------------------------------------------------------------------
+_handleKeyEvent (pitch_screen.dart:75) sadece şunları dinliyor:
+Escape, Enter ve ayarlanabilir tam ekran tuşu. Eksik olanlar:
+  - Delete/Backspace: seçili çizimi sil (şu an sadece sağ rail'deki "Sil"
+    butonu veya sağ tık ile mümkün).
+  - 1-7 gibi rakam tuşları: DrawingTool.arrow / ballPath / zone / playerRun
+    arasında fare kullanmadan hızlı geçiş.
+  - Ctrl+S: mevcut JSON dışa aktarma akışını (_handleExportJson) tetikle.
+Bir maç sırasında hızlı taktik anlatımı yapan bir koç için klavye kısayolları
+akışı ciddi hızlandırır.
+
+
+4) [UYGULANDI - seçenek a] ÇİZİM ARAÇLARININ YARISI MODELDE VAR AMA ARAYÜZDE YOK
+------------------------------------------------------------------
+UYGULANDI (a şıkkı): TacticsToolbar'a Çizgi, Serbest Çizim, Dikdörtgen,
+Daire, Vurgula ve Seç/Düzenle butonları eklendi; toolbar artık taşınca
+yatayda kayan bir SingleChildScrollView içinde. _handleSelectTacticTool
+bu araçlar için zaten genel setTool(choice) yoluna düşüyor, ek ön koşul
+gerekmedi. tactics_toolbar.dart güncellendi.
+
+DrawingTool enum'ında (models/drawing.dart) line, freehand, rectangle,
+circle, highlight, select değerleri tanımlı ve DrawingPainter bunların
+hepsini çizebiliyor (_paintShape switch-case'i tam kapsıyor). Ama
+TacticsToolbar (widgets/tactics_toolbar.dart) sadece 4 buton gösteriyor:
+Tekli Ok, Top Yolu, Alan Tarama, Oyuncu Koşusu. Yani "serbest çizim",
+"dikdörtgen/daire ile alan işaretleme", "vurgulama (highlight)" gibi
+zaten çalışan özellikler kullanıcıya hiç gösterilmiyor. İki seçenek var:
+  a) Bu araçlar için de toolbar'a buton ekleyip tamamen kullanılabilir hale
+     getirmek (en çok değeri "highlight" ve "freehand" sağlar - maç
+     analizinde bölge vurgulama çok kullanılır),
+  b) Kullanılmayacaksa modelden ve painter'dan temizleyip kod karmaşasını
+     azaltmak.
+Şu anki hâliyle "yarım bırakılmış özellik" durumu var; ikisinden biri
+tercih edilmeli.
+
+
+5) [UYGULANDI] ŞEKİL EĞME (BEND) HAREKETİ KEŞFEDİLEMİYOR
+------------------------------------------------------------------
+UYGULANDI: TacticsToolbar'a, aktif araca göre değişen küçük bir "İpucu:"
+satırı eklendi (ör. ok/top yolu/alan tarama için orta noktayı sürükleme,
+Seç/Düzenle için tıkla-seç + Shift ile çoklu seçim açıklaması).
+tactics_toolbar.dart güncellendi.
+
+Bir çizgiyi/oku eğri hale getirmek için select modunda şeklin orta
+noktasından sürüklemek gerekiyor (handleArrowBendStart vb.), ama bu
+hiçbir yerde görsel olarak ipucu verilmiyor - kullanıcı şeklin ortasında
+"tutamaç" olduğunu tesadüfen keşfetmek zorunda. Seçili şekilde her zaman
+görünen küçük bir tutamaç noktası (DrawingPainter zaten "selected" durumda
+tutamaç çiziyor, _paintShape:394-413) yeterli olabilir ama select moduna
+geçmeden bunu görmek mümkün değil; kısa bir tooltip veya ilk kullanımda
+gösterilecek bir ipucu eklenebilir.
+
+
+6) [UYGULANDI] ÇOKLU SEÇİM SADECE OYUNCULAR İÇİN VAR, ÇİZİMLER İÇİN YOK
+------------------------------------------------------------------
+UYGULANDI: selectedDrawingIndex (int?) -> selectedDrawingIndices (Set<int>)
+olarak değiştirildi. Düz tık tek seçer, Shift+tık ekler/çıkarır
+(_selectDrawing, HardwareKeyboard.instance.isShiftPressed). Seç modunda
+grup halinde taşıma ve "Sil" ile toplu silme çalışıyor (indeksler azalan
+sırayla siliniyor). tactics_controller.dart, drawing_layer.dart,
+pitch_screen.dart güncellendi.
+
+selectedPlayerIds bir Set<String> (çoklu seçim destekliyor, rubber-band
+ile), ama selectedDrawingIndex tek bir int (tactics_controller.dart:353).
+Bir koç aynı fazı anlatan 3-4 oku birlikte silmek/taşımak isteyebilir;
+şu an teker teker seçip silmek gerekiyor. selectedDrawingIndex'i
+Set<int> yapmak (ve _hitTestDrawing / deleteSelectedDrawing / bend
+handler'larını buna göre güncellemek) orta ölçekli ama değerli bir
+refactor olur.
+
+
+7) KATMAN SIRALAMASI (Z-ORDER) YÖNETİMİ YOK
+------------------------------------------------------------------
+drawings listesinin sırası aynı zamanda çizim sırası/z-index'i (DrawingPainter
+listeyi index sırasıyla çiziyor). Bir alan taraması (zone) başka bir okun
+üzerine çizilirse, oku öne almanın hiçbir yolu yok - silip yeniden
+çizmek gerekiyor. "Öne getir / arkaya gönder" gibi iki basit buton
+(selectedDrawingIndex'i drawings listesinde yer değiştirmek) düşük
+efor - orta değer bir iyileştirme.
+
+
+8) [UYGULANDI] OYUNCU KOŞUSU AKIŞI ÇOK ADIMLI, İPUCU YOK
+------------------------------------------------------------------
+UYGULANDI: TacticsToolbar'da, Oyuncu Koşusu aracı aktif değilken her zaman
+görünen bir durum satırı eklendi: "Oyuncu Koşusu: ○ Top Yolu → ○ Durak →
+○ Oyuncu" - her adım tamamlandıkça yeşil tik'e dönüyor. Böylece kullanıcı
+tek tek deneme-yanılma yapmadan tüm akışı önceden görüyor. tactics_toolbar.dart
+ve pitch_screen.dart güncellendi.
+
+beginPlayerRun() (tactics_controller.dart:792) üç ön koşul istiyor:
+1) bir top yolu (ballPath) çizilmiş olmalı, 2) bir segment seçilmeli
+(selectSegment), 3) tam olarak bir oyuncu seçili olmalı. Bu üçü
+sağlanmadan "Oyuncu Koşusu" butonuna basmanın hiçbir görünür etkisi
+olmuyor (sessizce false dönüyor). Toolbar'da veya ekranın üstünde küçük
+bir durum çubuğu ("1. Top yolu çizin → 2. Durak seçin → 3. Oyuncu
+seçin → 4. Koşuyu çizin") deneme-yanılmayı ortadan kaldırır.
+
+
+9) [UYGULANDI] HAZIR ŞABLON / PRESET SİSTEMİ YOK
+------------------------------------------------------------------
+UYGULANDI: models/drawing.dart'a DrawingPreset {id, name, shapes} eklendi.
+TacticsController'a drawingPresets listesi + saveDrawingsAsPreset (seçili
+şekiller varsa onları, yoksa tüm çizimleri kaydeder) / applyDrawingPreset
+(kopyaları sahaya ekler ve seçili bırakır) / deleteDrawingPreset eklendi.
+Sağ rail'e "Şablonlar" butonu, pitch_screen.dart'a şablonları listeleyen/
+uygulayan/silen bir dialog eklendi. Diğer state gibi bellek-içi (kalıcı
+depolama yok, uygulamanın geri kalanıyla tutarlı). pitch_right_rail.dart,
+pitch_screen.dart, tactics_controller.dart, models/drawing.dart güncellendi.
+
+Şu an sadece tüm sahayı (Tactic) kaydedip yükleme var (saveCurrentTactic,
+switchTactic). Sık tekrar eden çizim kalıpları (köşe vuruşu rutini,
+pres tetikleyicisi okları, belirli bir alan taraması) için ayrı, sahadan
+bağımsız bir "çizim şablonu" kütüphanesi olmaması, koçun her maç
+planında aynı okları elle yeniden çizmesine yol açıyor. Orta-uzun
+vadeli bir geliştirme olarak değerlendirilebilir.
+
+
+10) DOKUNMATİK/TABLET KULLANIMI İÇİN SAĞ TIK BAĞIMLILIĞI
+------------------------------------------------------------------
+Taslak iptali ve şekil silme akışının bir kısmı onSecondaryTapUp
+(sağ tık) üzerinden çalışıyor (handleDrawingRightClick). Bu araç saha
+kenarında tablet ile kullanılacaksa sağ tık karşılığı olmayabilir.
+Uzun basma (long-press) ile aynı davranışı tetiklemek dokunmatik
+kullanımda bu akışı erişilebilir kılar.
+
+
+ÖNCELİK SIRASI ÖNERİSİ
+------------------------------------------------------------------
+Hızlı kazanç (az efor, yüksek etki):
+  1) Undo/Redo butonu + Ctrl+Z kısayolu
+  2) Delete tuşu ile seçili şekli silme
+  3) Kalınlık (thickness) seçici
+
+Orta vadeli:
+  4) Kullanılmayan araçları (line/freehand/rectangle/circle/highlight)
+     ya toolbar'a ekle ya da modelden temizle
+  5) Öne getir/arkaya gönder (z-order)
+  6) Oyuncu koşusu akışı için adım adım ipucu
+
+Daha büyük kapsamlı:
+  7) Çizimler için çoklu seçim (Set<int>)
+  8) Bağımsız çizim şablonu/preset kütüphanesi
+  9) Dokunmatik/tablet için long-press desteği
