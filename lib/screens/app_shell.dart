@@ -11,7 +11,9 @@ import 'dashboard2_screen.dart';
 import 'dash1_screen.dart';
 import 'help_screen.dart';
 import 'pitch_screen.dart';
+import 'menu_player_screen.dart';
 import 'players_screen.dart';
+import 'records_screen.dart';
 import 'settings_screen.dart';
 import '../widgets/sidebar.dart';
 
@@ -28,7 +30,7 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  AppPage _currentPage = AppPage.dash1;
+  AppPage _currentPage = AppPage.pitch;
   TacticsController? _controller;
   Timer? _saveDebounce;
 
@@ -96,9 +98,16 @@ class _AppShellState extends State<AppShell> {
           onSelectPage: _selectPage,
         );
       case AppPage.dash1:
-        return Dash1Screen(onSelectPage: _selectPage);
+        return Dash1Screen(controller: controller, onSelectPage: _selectPage);
       case AppPage.players:
         return PlayersScreen(controller: controller);
+      case AppPage.records:
+        return RecordsScreen(controller: controller, onSelectPage: _selectPage);
+      case AppPage.menuPlayer:
+        return MenuPlayerScreen(
+          controller: controller,
+          onSelectPage: _selectPage,
+        );
       case AppPage.settings:
         return SettingsScreen(controller: controller);
       case AppPage.help:

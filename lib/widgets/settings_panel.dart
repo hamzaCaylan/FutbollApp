@@ -25,6 +25,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
   late final TextEditingController _customSquadController;
   late final TextEditingController _adBannerUrlController;
   late final TextEditingController _channelIconUrlController;
+  late final TextEditingController _cameraFrameUrlController;
 
   TacticsController get _controller => widget.controller;
 
@@ -40,6 +41,9 @@ class _SettingsPanelState extends State<SettingsPanel> {
     _channelIconUrlController = TextEditingController(
       text: _controller.channelIconImageUrl ?? '',
     );
+    _cameraFrameUrlController = TextEditingController(
+      text: _controller.cameraFrameImageUrl ?? '',
+    );
   }
 
   @override
@@ -47,6 +51,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
     _customSquadController.dispose();
     _adBannerUrlController.dispose();
     _channelIconUrlController.dispose();
+    _cameraFrameUrlController.dispose();
     super.dispose();
   }
 
@@ -235,6 +240,19 @@ class _SettingsPanelState extends State<SettingsPanel> {
             controller: _channelIconUrlController,
             currentUrl: _controller.channelIconImageUrl,
             onApply: (url) => _controller.setChannelIconImageUrl(url),
+          ),
+          const SizedBox(height: 16),
+          const Text('Kamera Çerçevesi görseli'),
+          const Text(
+            'Sahanın sağ alt köşesindeki yayıncı kamera çerçevesinde '
+            'gösterilecek görselin adresi (URL).',
+            style: TextStyle(fontSize: 12, color: Colors.white54),
+          ),
+          const SizedBox(height: 8),
+          _imageUrlField(
+            controller: _cameraFrameUrlController,
+            currentUrl: _controller.cameraFrameImageUrl,
+            onApply: (url) => _controller.setCameraFrameImageUrl(url),
           ),
           const SizedBox(height: 16),
           const Text('Tam ekran kısayolu'),

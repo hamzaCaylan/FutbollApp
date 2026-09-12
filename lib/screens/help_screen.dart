@@ -28,7 +28,10 @@ class HelpScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: ListView(
         children: [
-          Text('Kullanım Kılavuzu', style: Theme.of(context).textTheme.headlineSmall),
+          Text(
+            'Kullanım Kılavuzu',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
           const SizedBox(height: 8),
           Text(
             'FC Manager, antrenörler için dijital bir taktik tahtasıdır: '
@@ -170,7 +173,7 @@ class HelpScreen extends StatelessWidget {
             child: const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                'Not: "Paylaş", "Not Ekle" ve "Maçlar" özellikleri şu anda '
+                'Not: "Paylaş" ve "Not Ekle" özellikleri şu anda '
                 'geliştirme aşamasında ve yakında eklenecek.',
                 style: TextStyle(fontStyle: FontStyle.italic),
               ),

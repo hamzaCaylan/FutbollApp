@@ -231,15 +231,35 @@ class PlayerPiece extends StatelessWidget {
                     )
                   : null,
             ),
-            child: Text(
-              player.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 6,
+                  height: 6,
+                  margin: const EdgeInsets.only(right: 4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: switch (player.nationalityStatus) {
+                      'foreignU23' => Colors.green,
+                      'foreignOver23' => Colors.blue,
+                      _ => Colors.red,
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    player.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

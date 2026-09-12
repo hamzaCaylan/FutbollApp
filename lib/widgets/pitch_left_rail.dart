@@ -44,59 +44,61 @@ class PitchLeftRail extends StatelessWidget {
       width: 96,
       color: AppColors.panelDark,
       padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        children: [
-          _RailItem(
-            icon: Icons.grid_view_rounded,
-            label: 'Diziliş',
-            active: formationActive,
-            onTap: onToggleFormation,
-          ),
-          _RailItem(
-            icon: Icons.person_outline,
-            label: 'Oyuncular',
-            active: showBench,
-            onTap: onToggleBench,
-          ),
-          _RailItem(
-            icon: Icons.hub_outlined,
-            label: 'Taktikler',
-            active: tacticsActive,
-            onTap: onToggleTactics,
-          ),
-          _RailItem(
-            icon: Icons.folder_outlined,
-            label: 'Kayıtlar',
-            active: recordsActive,
-            onTap: onToggleRecords,
-          ),
-          _RailItem(
-            icon: Icons.description_outlined,
-            label: 'Notlar',
-            enabled: false,
-            onTap: onNotesTap,
-          ),
-          _RailItem(
-            icon: Icons.build_outlined,
-            label: 'Araçlar',
-            active: actionsActive,
-            onTap: onToggleActions,
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Divider(height: 1, color: Colors.white12),
-          ),
-          _RailItem(
-            icon: Icons.settings_outlined,
-            label: 'Ayarlar',
-            onTap: onSettingsTap,
-          ),
-          _RailItem(
-            icon: Icons.menu_book_outlined,
-            label: 'Kılavuz',
-            onTap: onHelpTap,
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _RailItem(
+              icon: Icons.grid_view_rounded,
+              label: 'Diziliş',
+              active: formationActive,
+              onTap: onToggleFormation,
+            ),
+            _RailItem(
+              icon: Icons.person_outline,
+              label: 'Oyuncular',
+              active: showBench,
+              onTap: onToggleBench,
+            ),
+            _RailItem(
+              icon: Icons.hub_outlined,
+              label: 'Taktikler',
+              active: tacticsActive,
+              onTap: onToggleTactics,
+            ),
+            _RailItem(
+              icon: Icons.folder_outlined,
+              label: 'Kayıtlar',
+              active: recordsActive,
+              onTap: onToggleRecords,
+            ),
+            _RailItem(
+              icon: Icons.description_outlined,
+              label: 'Notlar',
+              enabled: false,
+              onTap: onNotesTap,
+            ),
+            _RailItem(
+              icon: Icons.build_outlined,
+              label: 'Araçlar',
+              active: actionsActive,
+              onTap: onToggleActions,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Divider(height: 1, color: Colors.white12),
+            ),
+            _RailItem(
+              icon: Icons.settings_outlined,
+              label: 'Ayarlar',
+              onTap: onSettingsTap,
+            ),
+            _RailItem(
+              icon: Icons.menu_book_outlined,
+              label: 'Kılavuz',
+              onTap: onHelpTap,
+            ),
+          ],
+        ),
       ),
     );
   }

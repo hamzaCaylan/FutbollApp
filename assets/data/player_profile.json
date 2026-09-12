@@ -1,0 +1,25 @@
+{
+  "watermarkText": "BESIKTAS",
+  "heroNumber": "#28",
+  "heroPosition": "ST",
+  "heroImage": "assets/dashboard/v3.png",
+  "name": "Dušan Vlahović",
+  "club": "Beşiktaş JK",
+  "height": "1.90 m",
+  "weight": "75 kg",
+  "born": "28/01/2000",
+  "age": "26",
+  "origin": "Belgrad, Sırbistan",
+  "debut": "2016 (Partizan)",
+  "previousClubs": ["JUV 2022-26", "FIO 2018-22", "PAR 2016-18"],
+  "homeTeam": "Beşiktaş",
+  "awayTeam": "Galatasaray",
+  "matchScore": "2 - 1",
+  "league": "SÜPER LİG",
+  "matchStatus": "FINAL",
+  "stats": [
+    { "label": "MAÇ BAŞI GOL", "value": "0.55" },
+    { "label": "İSABETLİ ŞUT", "value": "1.8" },
+    { "label": "GOL ÇEVİRME ORANI", "value": "21%" }
+  ]
+}

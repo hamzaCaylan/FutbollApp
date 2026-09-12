@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 
-enum AppPage { dashboard, dashboard2, dash1, pitch, players, settings, help }
+enum AppPage {
+  dashboard,
+  dashboard2,
+  dash1,
+  pitch,
+  players,
+  records,
+  menuPlayer,
+  settings,
+  help,
+}
 
 extension AppPageExtension on AppPage {
   String get label {
@@ -15,6 +25,10 @@ extension AppPageExtension on AppPage {
         return 'Tactics';
       case AppPage.players:
         return 'Players';
+      case AppPage.records:
+        return 'Kayıtlar';
+      case AppPage.menuPlayer:
+        return 'MenuPlayer';
       case AppPage.settings:
         return 'Settings';
       case AppPage.help:
@@ -34,6 +48,10 @@ extension AppPageExtension on AppPage {
         return Icons.sports_soccer;
       case AppPage.players:
         return Icons.group;
+      case AppPage.records:
+        return Icons.collections_bookmark_outlined;
+      case AppPage.menuPlayer:
+        return Icons.style_outlined;
       case AppPage.settings:
         return Icons.settings;
       case AppPage.help:

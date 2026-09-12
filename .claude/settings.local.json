@@ -112,7 +112,18 @@
       "Bash(node substitute_verify2.js)",
       "Bash(python3 -)",
       "Bash(sort -t: -k3)",
-      "Bash(awk -F: '{print $3}')"
+      "Bash(awk -F: '{print $3}')",
+      "Bash(xargs -r kill -9)",
+      "Bash(nohup python3 -m http.server 8765)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:8765/)",
+      "Bash(npx playwright *)",
+      "Bash(node test_sweep1.js)",
+      "Bash(node test_sweep2.js)",
+      "Bash(node test_sweep3.js)",
+      "Bash(node test_sweep4.js)",
+      "Bash(node test_sweep5.js)",
+      "Bash(node test_sweep6.js)",
+      "Bash(node test_sweep7.js)"
     ]
   }
 }

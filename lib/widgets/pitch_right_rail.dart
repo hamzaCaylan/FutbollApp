@@ -10,6 +10,7 @@ class PitchRightRail extends StatelessWidget {
     required this.onDelete,
     required this.onCaptain,
     required this.onCard,
+    required this.onNationality,
     required this.onAddNote,
     required this.onSearchPlayer,
     required this.onTemplates,
@@ -35,6 +36,10 @@ class PitchRightRail extends StatelessWidget {
   /// Cycles the single selected player's card status
   /// none -> yellow -> red -> none.
   final VoidCallback onCard;
+
+  /// Cycles the single selected player's nationality status
+  /// local -> foreignU23 -> foreignOver23 -> local.
+  final VoidCallback onNationality;
   final VoidCallback onAddNote;
   final VoidCallback onSearchPlayer;
 
@@ -90,6 +95,8 @@ class PitchRightRail extends StatelessWidget {
         _action(Icons.star_outline, 'Kaptan', onCaptain),
         const SizedBox(height: 6),
         _action(Icons.style_outlined, 'Kart Ver', onCard),
+        const SizedBox(height: 6),
+        _action(Icons.public, 'Uyruk', onNationality),
         const SizedBox(height: 6),
         _action(Icons.note_add_outlined, 'Not Ekle', onAddNote),
         const SizedBox(height: 6),

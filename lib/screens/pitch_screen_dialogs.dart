@@ -439,39 +439,146 @@ Future<void> showRenamePlayerDialog(
   }
 }
 
-/// "Yeni Kayıt" in the Kayıtlar panel: prompts for a name and saves the
-/// current live board as a new, separately named entry.
+/// "Yeni Kayıt" in the Kayıtlar panel: prompts for a title, description and
+/// category, then saves the current live board as a new, separately named
+/// entry carrying that info - later viewable/editable from the record's
+/// info (ⓘ) button.
 Future<void> showSaveRecordAsNewDialog(
   BuildContext context,
   TacticsController controller,
   void Function(String message) showMessage,
 ) async {
-  final textController = TextEditingController();
-  final name = await showDialog<String>(
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final categoryController = TextEditingController();
+  final saved = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Kayıt adı'),
-      content: TextField(
-        controller: textController,
-        autofocus: true,
-        decoration: const InputDecoration(hintText: 'Ör. 2. Yarı Baskı'),
-        onSubmitted: (value) => Navigator.of(context).pop(value),
+      title: const Text('Yeni Kayıt'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: nameController,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Başlık',
+              hintText: 'Ör. 2. Yarı Baskı',
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: descriptionController,
+            decoration: const InputDecoration(
+              labelText: 'Açıklama',
+              hintText: 'Bu kayıt hakkında not ekleyin',
+              alignLabelWithHint: true,
+            ),
+            maxLines: 4,
+            minLines: 2,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: categoryController,
+            decoration: const InputDecoration(
+              labelText: 'Kategori',
+              hintText: 'Ör. Duran Top',
+            ),
+            onSubmitted: (_) => Navigator.of(context).pop(true),
+          ),
+        ],
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(false),
           child: const Text('İptal'),
         ),
         FilledButton(
-          onPressed: () => Navigator.of(context).pop(textController.text),
+          onPressed: () => Navigator.of(context).pop(true),
           child: const Text('Kaydet'),
         ),
       ],
     ),
   );
-  if (name != null && name.trim().isNotEmpty) {
-    controller.saveCurrentAsNew(name.trim());
+  if (saved == true && nameController.text.trim().isNotEmpty) {
+    controller.saveCurrentAsNew(
+      nameController.text.trim(),
+      description: descriptionController.text,
+      category: categoryController.text,
+    );
     showMessage('Kayıt eklendi.');
+  }
+}
+
+/// The Kayıtlar panel's per-record info (ⓘ) action: shows and edits a saved
+/// record's title, description and category together, saved with one
+/// "Kaydet" - the same info gathered by [showSaveRecordAsNewDialog] when the
+/// record was first created.
+Future<void> showTacticInfoDialog(
+  BuildContext context,
+  TacticsController controller,
+  String id,
+  String currentName,
+  String currentDescription,
+  String currentCategory,
+) async {
+  final nameController = TextEditingController(text: currentName);
+  final descriptionController = TextEditingController(text: currentDescription);
+  final categoryController = TextEditingController(text: currentCategory);
+  final saved = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Kayıt Bilgisi'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: nameController,
+            autofocus: true,
+            decoration: const InputDecoration(labelText: 'Başlık'),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: descriptionController,
+            decoration: const InputDecoration(
+              labelText: 'Açıklama',
+              hintText: 'Bu kayıt hakkında not ekleyin',
+              alignLabelWithHint: true,
+            ),
+            maxLines: 4,
+            minLines: 2,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: categoryController,
+            decoration: const InputDecoration(
+              labelText: 'Kategori',
+              hintText: 'Ör. Duran Top',
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('İptal'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Kaydet'),
+        ),
+      ],
+    ),
+  );
+  if (saved == true) {
+    controller.updateTacticInfo(
+      id,
+      name: nameController.text,
+      description: descriptionController.text,
+      category: categoryController.text,
+    );
   }
 }
 

@@ -12,6 +12,12 @@ class Player {
     this.locked = false,
     this.substituted = false,
     this.card = 'none',
+    this.nationalityStatus = 'local',
+    this.photoUrl,
+    this.heightCm,
+    this.weightKg,
+    this.birthYear,
+    this.club,
   });
 
   final String id;
@@ -33,6 +39,19 @@ class Player {
   /// card icon at the top-left of the player's jersey when not 'none'.
   String card;
 
+  /// 'local' | 'foreignU23' | 'foreignOver23' - shown as a small colored dot
+  /// next to the player's name label (red/green/blue respectively).
+  String nationalityStatus;
+
+  /// Optional bio fields a coach can fill in from the Oyuncular editor,
+  /// shown on the player's detail page (Dash1Screen) when set; all default
+  /// to null (unset) and render as a "—" placeholder there.
+  String? photoUrl;
+  int? heightCm;
+  int? weightKg;
+  int? birthYear;
+  String? club;
+
   Player copy() => Player(
     id: id,
     name: name,
@@ -46,6 +65,12 @@ class Player {
     locked: locked,
     substituted: substituted,
     card: card,
+    nationalityStatus: nationalityStatus,
+    photoUrl: photoUrl,
+    heightCm: heightCm,
+    weightKg: weightKg,
+    birthYear: birthYear,
+    club: club,
   );
 
   Map<String, dynamic> toJson() => {
@@ -61,6 +86,12 @@ class Player {
     'locked': locked,
     'substituted': substituted,
     'card': card,
+    'nationalityStatus': nationalityStatus,
+    'photoUrl': photoUrl,
+    'heightCm': heightCm,
+    'weightKg': weightKg,
+    'birthYear': birthYear,
+    'club': club,
   };
 
   factory Player.fromJson(Map<String, dynamic> json) => Player(
@@ -76,5 +107,11 @@ class Player {
     locked: json['locked'] as bool? ?? false,
     substituted: json['substituted'] as bool? ?? false,
     card: json['card'] as String? ?? 'none',
+    nationalityStatus: json['nationalityStatus'] as String? ?? 'local',
+    photoUrl: json['photoUrl'] as String?,
+    heightCm: json['heightCm'] as int?,
+    weightKg: json['weightKg'] as int?,
+    birthYear: json['birthYear'] as int?,
+    club: json['club'] as String?,
   );
 }

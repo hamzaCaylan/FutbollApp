@@ -12,6 +12,7 @@ class RecordsPanel extends StatelessWidget {
     required this.controller,
     required this.onSaveAsNew,
     required this.onRename,
+    required this.onInfo,
     this.compact = false,
   });
 
@@ -22,6 +23,16 @@ class RecordsPanel extends StatelessWidget {
 
   /// Prompts for a new name for the tactic with this id/current name.
   final void Function(String id, String currentName) onRename;
+
+  /// Opens the info dialog (title + description + category) for the tactic
+  /// with this id/current name/current description/current category.
+  final void Function(
+    String id,
+    String currentName,
+    String currentDescription,
+    String currentCategory,
+  )
+  onInfo;
 
   /// When true, renders as a narrow icon-only column that fits the left
   /// rail's width instead of the full labeled list.
@@ -79,6 +90,12 @@ class RecordsPanel extends StatelessWidget {
               compact: compact,
               onTap: () => controller.switchTactic(tactic.id),
               onRename: () => onRename(tactic.id, tactic.name),
+              onInfo: () => onInfo(
+                tactic.id,
+                tactic.name,
+                tactic.description,
+                tactic.category,
+              ),
               onDelete: controller.tactics.length > 1
                   ? () => controller.deleteTactic(tactic.id)
                   : null,
@@ -96,6 +113,7 @@ class _RecordTile extends StatelessWidget {
     required this.compact,
     required this.onTap,
     required this.onRename,
+    required this.onInfo,
     required this.onDelete,
   });
 
@@ -104,6 +122,7 @@ class _RecordTile extends StatelessWidget {
   final bool compact;
   final VoidCallback onTap;
   final VoidCallback onRename;
+  final VoidCallback onInfo;
   final VoidCallback? onDelete;
 
   @override
@@ -154,6 +173,14 @@ class _RecordTile extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.info_outline, size: 16),
+            color: Colors.grey.shade400,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            onPressed: onInfo,
+            tooltip: 'Bilgi',
           ),
           IconButton(
             icon: const Icon(Icons.edit_outlined, size: 16),

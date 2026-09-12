@@ -22,6 +22,8 @@ class Sidebar extends StatelessWidget {
     AppPage.dash1,
     AppPage.pitch,
     AppPage.players,
+    AppPage.records,
+    AppPage.menuPlayer,
     AppPage.help,
   ];
 

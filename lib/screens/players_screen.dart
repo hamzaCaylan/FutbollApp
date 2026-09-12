@@ -20,7 +20,12 @@ class PlayersScreen extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         child: Column(
           children: [
-            const TabBar(tabs: [Tab(text: 'Ev Sahibi'), Tab(text: 'Deplasman')]),
+            const TabBar(
+              tabs: [
+                Tab(text: 'Ev Sahibi'),
+                Tab(text: 'Deplasman'),
+              ],
+            ),
             Expanded(
               child: TabBarView(
                 children: [
@@ -107,30 +112,92 @@ class _PlayerTile extends StatelessWidget {
 
   Future<void> _showEditDialog(BuildContext context) async {
     final nameController = TextEditingController(text: player.name);
-    final numberController = TextEditingController(text: player.number.toString());
+    final numberController = TextEditingController(
+      text: player.number.toString(),
+    );
     final positionController = TextEditingController(text: player.position);
+    final photoUrlController = TextEditingController(
+      text: player.photoUrl ?? '',
+    );
+    final heightController = TextEditingController(
+      text: player.heightCm?.toString() ?? '',
+    );
+    final weightController = TextEditingController(
+      text: player.weightKg?.toString() ?? '',
+    );
+    final birthYearController = TextEditingController(
+      text: player.birthYear?.toString() ?? '',
+    );
+    final clubController = TextEditingController(text: player.club ?? '');
     final saved = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Oyuncuyu düzenle'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              autofocus: true,
-              decoration: const InputDecoration(labelText: 'İsim'),
-            ),
-            TextField(
-              controller: numberController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Forma numarası'),
-            ),
-            TextField(
-              controller: positionController,
-              decoration: const InputDecoration(labelText: 'Mevki (ör. CB, ST)'),
-            ),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                autofocus: true,
+                decoration: const InputDecoration(labelText: 'İsim'),
+              ),
+              TextField(
+                controller: numberController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Forma numarası'),
+              ),
+              TextField(
+                controller: positionController,
+                decoration: const InputDecoration(
+                  labelText: 'Mevki (ör. CB, ST)',
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 16, bottom: 4),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Detay sayfası bilgileri (opsiyonel)',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ),
+              ),
+              TextField(
+                controller: photoUrlController,
+                decoration: const InputDecoration(
+                  labelText: 'Fotoğraf URL (opsiyonel)',
+                ),
+              ),
+              TextField(
+                controller: heightController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Boy (cm, opsiyonel)',
+                ),
+              ),
+              TextField(
+                controller: weightController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Kilo (kg, opsiyonel)',
+                ),
+              ),
+              TextField(
+                controller: birthYearController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Doğum yılı (opsiyonel)',
+                ),
+              ),
+              TextField(
+                controller: clubController,
+                decoration: const InputDecoration(
+                  labelText: 'Kulüp (opsiyonel)',
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -149,6 +216,18 @@ class _PlayerTile extends StatelessWidget {
     controller.setPlayerPosition(player.id, positionController.text);
     final number = int.tryParse(numberController.text);
     if (number != null) controller.setPlayerNumber(player.id, number);
+    controller.updatePlayerBio(
+      player.id,
+      photoUrl: photoUrlController.text.trim().isEmpty
+          ? null
+          : photoUrlController.text.trim(),
+      heightCm: int.tryParse(heightController.text),
+      weightKg: int.tryParse(weightController.text),
+      birthYear: int.tryParse(birthYearController.text),
+      club: clubController.text.trim().isEmpty
+          ? null
+          : clubController.text.trim(),
+    );
   }
 
   Future<void> _confirmDelete(BuildContext context) async {

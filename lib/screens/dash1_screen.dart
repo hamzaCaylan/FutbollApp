@@ -1,75 +1,92 @@
 import 'package:flutter/material.dart';
 
 import '../models/app_page.dart';
+import '../models/player_profile.dart';
+import '../state/tactics_controller.dart';
 import '../theme/app_colors.dart';
 
 /// A high-fidelity build-out of the layered "player profile" hero dashboard
-/// described in assets/not/prdash.md, populated with Dušan Vlahović's
-/// Beşiktaş transfer profile: watermark typography behind a floating
-/// cutout, side info panels, a match/media column, and three gradient
-/// stat cards overlapping the hero's lower edge.
+/// described in assets/not/prdash.md, now driven by a real roster player
+/// instead of the original static demo JSON: watermark typography behind a
+/// floating cutout, a left info panel, and three gradient stat cards
+/// overlapping the hero's lower edge. Reached from MenuPlayerScreen (which
+/// sets [TacticsController.viewingPlayerId] before navigating here) or
+/// directly from the sidebar, in which case it falls back to the roster's
+/// first home player.
 class Dash1Screen extends StatelessWidget {
-  const Dash1Screen({super.key, required this.onSelectPage});
+  const Dash1Screen({
+    super.key,
+    required this.controller,
+    required this.onSelectPage,
+  });
 
+  final TacticsController controller;
   final ValueChanged<AppPage> onSelectPage;
 
   static const _navy = Color(0xFF0D2240);
   static const _bg = Color(0xFFF4F5F8);
   static const _watermark = Color(0xFFE5E8ED);
-  static const _heroImage = 'assets/dashboard/v3.png';
-
-  // --- Vlahović / Beşiktaş profile data ---------------------------------
-  static const _watermarkText = 'BESIKTAS';
-  static const _heroNumber = '#28';
-  static const _heroPosition = 'ST';
-  static const _playerName = 'Dušan Vlahović';
-  static const _clubName = 'Beşiktaş JK';
-  static const _height = '1.90 m';
-  static const _weight = '75 kg';
-  static const _born = '28/01/2000';
-  static const _age = '26';
-  static const _origin = 'Belgrad, Sırbistan';
-  static const _debut = '2016 (Partizan)';
-  static const _previousClubs = ['JUV 2022-26', 'FIO 2018-22', 'PAR 2016-18'];
-  static const _homeTeam = 'Beşiktaş';
-  static const _awayTeam = 'Galatasaray';
-  static const _matchScore = '2 - 1';
-  static const _league = 'SÜPER LİG';
-  static const _matchStatus = 'FINAL';
-  static const _statCards = [
-    ('MAÇ BAŞI GOL', '0.55'),
-    ('İSABETLİ ŞUT', '1.8'),
-    ('GOL ÇEVİRME ORANI', '21%'),
-  ];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: _bg,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 28,
-            offset: const Offset(0, 10),
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final homePlayers =
+            controller.players.where((p) => p.team == 'home').toList()
+              ..sort((a, b) => a.number.compareTo(b.number));
+        final viewingId = controller.viewingPlayerId;
+        final player = homePlayers.where((p) => p.id == viewingId).firstOrNull;
+        final resolved = player ?? homePlayers.firstOrNull;
+        final profile = resolved != null
+            ? PlayerProfile.fromPlayer(resolved, controller: controller)
+            : null;
+        // Inter is this screen's default text face (nav, labels, buttons,
+        // body copy); Anton is applied explicitly on the decorative
+        // headline elements - watermark, hero number/position, player
+        // name, stat values.
+        return DefaultTextStyle.merge(
+          style: const TextStyle(fontFamily: 'Inter'),
+          child: Container(
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: _bg,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.12),
+                  blurRadius: 28,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: profile == null
+                ? const Center(child: Text('Kadroda henüz oyuncu yok.'))
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      final compact = constraints.maxWidth < 1000;
+                      final body = compact
+                          ? _CompactBody(
+                              profile: profile,
+                              onSelectPage: onSelectPage,
+                            )
+                          : _WideBody(
+                              profile: profile,
+                              onSelectPage: onSelectPage,
+                            );
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const _SideRail(),
+                          Expanded(child: body),
+                        ],
+                      );
+                    },
+                  ),
           ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxWidth < 1000;
-          final body = compact
-              ? _CompactBody(onSelectPage: onSelectPage)
-              : _WideBody(onSelectPage: onSelectPage);
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [const _SideRail(), Expanded(child: body)],
-          );
-        },
-      ),
+        );
+      },
     );
   }
 }
@@ -91,8 +108,9 @@ class _SideRail extends StatelessWidget {
 }
 
 class _WideBody extends StatelessWidget {
-  const _WideBody({required this.onSelectPage});
+  const _WideBody({required this.profile, required this.onSelectPage});
 
+  final PlayerProfile profile;
   final ValueChanged<AppPage> onSelectPage;
 
   @override
@@ -104,20 +122,20 @@ class _WideBody extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              const Positioned.fill(
-                child: _Hero(leftInset: 348, rightInset: 436),
+              Positioned.fill(
+                child: _Hero(profile: profile, leftInset: 348, rightInset: 436),
               ),
-              const Positioned(
+              Positioned(
                 left: 32,
                 bottom: 220,
                 width: 300,
-                child: _LeftPanel(),
+                child: _LeftPanel(profile: profile),
               ),
-              const Positioned(
+              Positioned(
                 right: 32,
                 top: 100,
                 width: 380,
-                child: _RightPanel(),
+                child: _TeamPanel(profile: profile),
               ),
               Positioned(
                 left: 0,
@@ -127,12 +145,12 @@ class _WideBody extends StatelessWidget {
                   widthFactor: 0.75,
                   child: Row(
                     children: [
-                      for (var i = 0; i < Dash1Screen._statCards.length; i++) ...[
+                      for (var i = 0; i < profile.stats.length; i++) ...[
                         if (i != 0) const SizedBox(width: 14),
                         Expanded(
                           child: _GradientStatCard(
-                            label: Dash1Screen._statCards[i].$1,
-                            value: Dash1Screen._statCards[i].$2,
+                            label: profile.stats[i].label,
+                            value: profile.stats[i].value,
                           ),
                         ),
                       ],
@@ -149,8 +167,9 @@ class _WideBody extends StatelessWidget {
 }
 
 class _CompactBody extends StatelessWidget {
-  const _CompactBody({required this.onSelectPage});
+  const _CompactBody({required this.profile, required this.onSelectPage});
 
+  final PlayerProfile profile;
   final ValueChanged<AppPage> onSelectPage;
 
   @override
@@ -164,33 +183,25 @@ class _CompactBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 260, child: _Hero()),
+                SizedBox(height: 260, child: _Hero(profile: profile)),
                 const SizedBox(height: 20),
-                const _LeftPanel(),
+                _LeftPanel(profile: profile),
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    for (
-                      var i = 0;
-                      i < Dash1Screen._statCards.length;
-                      i++
-                    ) ...[
+                    for (var i = 0; i < profile.stats.length; i++) ...[
                       if (i != 0) const SizedBox(width: 12),
                       Expanded(
                         child: _GradientStatCard(
-                          label: Dash1Screen._statCards[i].$1,
-                          value: Dash1Screen._statCards[i].$2,
+                          label: profile.stats[i].label,
+                          value: profile.stats[i].value,
                         ),
                       ),
                     ],
                   ],
                 ),
                 const SizedBox(height: 20),
-                const _MatchCard(),
-                const SizedBox(height: 16),
-                const _VideoCarousel(),
-                const SizedBox(height: 16),
-                const _CareerSummary(),
+                _TeamPanel(profile: profile),
               ],
             ),
           ),
@@ -316,7 +327,18 @@ class _TopNav extends StatelessWidget {
 /// outline, oversized red number/position callouts, and the floating
 /// cutout overlapping the bottom edge.
 class _Hero extends StatelessWidget {
-  const _Hero({this.leftInset = 44, this.rightInset = 44});
+  const _Hero({
+    required this.profile,
+    this.leftInset = 44,
+    this.rightInset = 44,
+  });
+
+  final PlayerProfile profile;
+
+  /// Shown whenever a player has no photoUrl set (or it fails to load) -
+  /// a generic cutout jersey photo, matching the reference layout's look,
+  /// instead of a bare "person" icon.
+  static const _defaultHeroImage = 'assets/dashboard/v3.png';
 
   /// Horizontal clearance for the oversized number/position callouts, so
   /// they don't wash out overlapping side panels in the wide layout.
@@ -334,23 +356,33 @@ class _Hero extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               Positioned(
-                top: 50,
-                left: 0,
+                top: 16,
+                left: 36,
                 right: 0,
-                child: Center(
+                child: Align(
+                  alignment: Alignment.centerLeft,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: Text(
-                        Dash1Screen._watermarkText,
-                        style: const TextStyle(
-                          fontFamily: 'Anton',
-                          fontSize: 190,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: -4,
-                          color: Dash1Screen._watermark,
-                          height: 0.95,
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                      child: ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.white, Colors.transparent],
+                          stops: [0.35, 1.0],
+                        ).createShader(bounds),
+                        blendMode: BlendMode.dstIn,
+                        child: Text(
+                          profile.watermarkText,
+                          style: const TextStyle(
+                            fontFamily: 'Anton',
+                            fontSize: 360,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -2,
+                            color: Dash1Screen._watermark,
+                            height: 0.95,
+                          ),
                         ),
                       ),
                     ),
@@ -358,13 +390,13 @@ class _Hero extends StatelessWidget {
                 ),
               ),
               Container(
-                width: h * 0.82,
-                height: h * 0.82,
+                width: h * 0.74 + 18,
+                height: h * 0.74 + 18,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    width: 1.5,
+                    color: const Color(0xFFBDBDBD),
+                    width: 1.2,
                   ),
                 ),
               ),
@@ -372,8 +404,9 @@ class _Hero extends StatelessWidget {
                 left: leftInset,
                 top: h * 0.10,
                 child: Text(
-                  Dash1Screen._heroNumber,
+                  profile.heroNumber,
                   style: TextStyle(
+                    fontFamily: 'Anton',
                     fontSize: h * 0.18,
                     fontWeight: FontWeight.w900,
                     color: AppColors.red.withValues(alpha: 0.88),
@@ -385,8 +418,9 @@ class _Hero extends StatelessWidget {
                 right: rightInset,
                 top: h * 0.08,
                 child: Text(
-                  Dash1Screen._heroPosition,
+                  profile.heroPosition,
                   style: TextStyle(
+                    fontFamily: 'Anton',
                     fontSize: h * 0.14,
                     fontWeight: FontWeight.w900,
                     color: AppColors.red.withValues(alpha: 0.8),
@@ -396,11 +430,35 @@ class _Hero extends StatelessWidget {
               ),
               Positioned(
                 bottom: 0,
-                child: Image.asset(
-                  Dash1Screen._heroImage,
-                  height: h * 0.84,
-                  fit: BoxFit.contain,
-                ),
+                child: profile.heroImage.isEmpty
+                    ? Image.asset(
+                        _defaultHeroImage,
+                        height: h * 0.88,
+                        fit: BoxFit.contain,
+                      )
+                    : profile.heroImage.startsWith('assets/')
+                    ? Image.asset(
+                        profile.heroImage,
+                        height: h * 0.88,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.asset(
+                              _defaultHeroImage,
+                              height: h * 0.88,
+                              fit: BoxFit.contain,
+                            ),
+                      )
+                    : Image.network(
+                        profile.heroImage,
+                        height: h * 0.88,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.asset(
+                              _defaultHeroImage,
+                              height: h * 0.88,
+                              fit: BoxFit.contain,
+                            ),
+                      ),
               ),
             ],
           ),
@@ -411,9 +469,11 @@ class _Hero extends StatelessWidget {
 }
 
 /// Left info panel: favorite pill, name + club, height/weight grid, and a
-/// divided key-value table (born / age / origin).
+/// divided key-value table (born / age).
 class _LeftPanel extends StatelessWidget {
-  const _LeftPanel();
+  const _LeftPanel({required this.profile});
+
+  final PlayerProfile profile;
 
   static const _ink = Color(0xFF12141A);
   static const _accentBlue = Color(0xFF1D4ED8);
@@ -449,13 +509,14 @@ class _LeftPanel extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 22),
-        const Row(
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Text(
-                Dash1Screen._playerName,
-                style: TextStyle(
+                profile.name,
+                style: const TextStyle(
+                  fontFamily: 'Anton',
                   fontSize: 40,
                   fontWeight: FontWeight.w900,
                   color: _ink,
@@ -464,13 +525,9 @@ class _LeftPanel extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 10),
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                size: 28,
-                color: _ink,
-              ),
+              child: Icon(Icons.keyboard_arrow_down, size: 28, color: _ink),
             ),
           ],
         ),
@@ -488,10 +545,10 @@ class _LeftPanel extends StatelessWidget {
               child: const Icon(Icons.shield, size: 14, color: Colors.white),
             ),
             const SizedBox(width: 10),
-            const Expanded(
+            Expanded(
               child: Text(
-                Dash1Screen._clubName,
-                style: TextStyle(
+                profile.club,
+                style: const TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.w500,
                   color: _ink,
@@ -508,23 +565,22 @@ class _LeftPanel extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Expanded(
-                child: _SpecTile(label: 'BOY', value: Dash1Screen._height),
+              Expanded(
+                child: _SpecTile(label: 'BOY', value: profile.height),
               ),
               const SizedBox(width: 24),
               Container(width: 1, color: _dividerColor),
               const SizedBox(width: 24),
-              const Expanded(
-                child: _SpecTile(label: 'KİLO', value: Dash1Screen._weight),
+              Expanded(
+                child: _SpecTile(label: 'KİLO', value: profile.weight),
               ),
             ],
           ),
         ),
         const SizedBox(height: 14),
         Container(height: 1, color: _dividerColor),
-        const _InfoRow(label: 'DOĞUM', value: Dash1Screen._born),
-        const _InfoRow(label: 'YAŞ', value: Dash1Screen._age),
-        const _InfoRow(label: 'MENŞEİ', value: Dash1Screen._origin, isLast: true),
+        _InfoRow(label: 'DOĞUM', value: profile.born),
+        _InfoRow(label: 'YAŞ', value: profile.age, isLast: true),
       ],
     );
   }
@@ -618,29 +674,14 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-/// Right column: match score card, video highlight carousel, and a career
-/// summary block - the reference's "Matches & Media" panel.
-class _RightPanel extends StatelessWidget {
-  const _RightPanel();
+/// Right-side card: real team/plan/status facts (takım, aktif plan,
+/// diziliş, kaptanlık, uyruk, kart durumu) derived from the roster and the
+/// active tactic - fills the space the original static demo used for a
+/// fabricated match/video/career section.
+class _TeamPanel extends StatelessWidget {
+  const _TeamPanel({required this.profile});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _MatchCard(),
-        SizedBox(height: 16),
-        _VideoCarousel(),
-        SizedBox(height: 16),
-        _CareerSummary(),
-      ],
-    );
-  }
-}
-
-class _MatchCard extends StatelessWidget {
-  const _MatchCard();
+  final PlayerProfile profile;
 
   @override
   Widget build(BuildContext context) {
@@ -660,295 +701,20 @@ class _MatchCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
-            children: [
-              Text(
-                'SON MAÇ',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.charcoal,
-                ),
-              ),
-              SizedBox(width: 22),
-              Text(
-                'SONRAKİ MAÇ',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black38,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
           const Text(
-            Dash1Screen._league,
+            'TAKIM VE PLAN',
             style: TextStyle(
-              fontSize: 12,
-              color: Colors.black38,
-              letterSpacing: 0.4,
-            ),
-          ),
-          const SizedBox(height: 22),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Flexible(
-                child: _TeamScoreBlock(label: Dash1Screen._homeTeam),
-              ),
-              Column(
-                children: [
-                  const Text(
-                    Dash1Screen._matchScore,
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.charcoal,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEFEFEF),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: const Text(
-                      Dash1Screen._matchStatus,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Flexible(
-                child: _TeamScoreBlock(label: Dash1Screen._awayTeam),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TeamScoreBlock extends StatelessWidget {
-  const _TeamScoreBlock({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 34,
-          height: 34,
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: AppColors.charcoal,
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(Icons.shield, size: 18, color: Colors.white),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: AppColors.charcoal,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Horizontal highlight-clip carousel with a play-icon overlay and a
-/// duration badge on each thumbnail, per the reference layout.
-class _VideoCarousel extends StatelessWidget {
-  const _VideoCarousel();
-
-  static const _clips = [
-    (
-      image: 'assets/dashboard/ds.jpg',
-      duration: '1:15',
-      title: 'Antrenman Öne Çıkanları',
-    ),
-    (image: 'assets/dashboard/es.jpg', duration: '0:48', title: 'Gol Anları'),
-    (
-      image: 'assets/dashboard/top1.jpg',
-      duration: '2:03',
-      title: 'Taktik Analiz',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 158,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: _clips.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 12),
-        itemBuilder: (context, index) {
-          final clip = _clips[index];
-          return SizedBox(
-            width: 128,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.asset(clip.image, fit: BoxFit.cover),
-                        Container(
-                          color: Colors.black.withValues(alpha: 0.18),
-                        ),
-                        const Center(
-                          child: Icon(
-                            Icons.play_circle_fill,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        Positioned(
-                          right: 6,
-                          bottom: 6,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Text(
-                              clip.duration,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  clip.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-/// Career summary: pro debut and a short list of previous clubs, per the
-/// reference's "NBA DEBUT / YEARS IN NBA / PREVIOUSLY" block.
-class _CareerSummary extends StatelessWidget {
-  const _CareerSummary();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F8),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEDEDED)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'KARİYER ÖZETİ',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: Colors.black45,
-              letterSpacing: 0.5,
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: AppColors.charcoal,
             ),
           ),
           const SizedBox(height: 12),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'PROFESYONEL DEBÜT',
-                style: TextStyle(fontSize: 12, color: Colors.black45),
-              ),
-              SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  Dash1Screen._debut,
-                  textAlign: TextAlign.right,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.charcoal,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'ÖNCEKİ TAKIMLAR',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black45,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(height: 8),
-          for (final club in Dash1Screen._previousClubs)
-            Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Row(
-                children: [
-                  Container(
-                    width: 5,
-                    height: 5,
-                    decoration: const BoxDecoration(
-                      color: AppColors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    club,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.charcoal,
-                    ),
-                  ),
-                ],
-              ),
+          for (var i = 0; i < profile.teamFacts.length; i++)
+            _InfoRow(
+              label: profile.teamFacts[i].label,
+              value: profile.teamFacts[i].value,
+              isLast: i == profile.teamFacts.length - 1,
             ),
         ],
       ),
@@ -985,7 +751,9 @@ class _GradientStatCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
-          const Positioned.fill(child: CustomPaint(painter: _TrendLinePainter())),
+          const Positioned.fill(
+            child: CustomPaint(painter: _TrendLinePainter()),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 30),
             child: Column(
@@ -1002,36 +770,16 @@ class _GradientStatCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        value,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 34,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          height: 1,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      width: 32,
-                      height: 32,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF3E7BFA),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_upward,
-                        size: 17,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                Text(
+                  value,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontFamily: 'Anton',
+                    fontSize: 34,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1,
+                  ),
                 ),
               ],
             ),

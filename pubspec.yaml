@@ -64,11 +64,15 @@ flutter:
     - assets/saha/
     - assets/forma/
     - assets/dashboard/
+    - assets/data/
 
   fonts:
     - family: Anton
       fonts:
         - asset: assets/fonts/Anton-Regular.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

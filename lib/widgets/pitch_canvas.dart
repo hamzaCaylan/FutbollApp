@@ -243,6 +243,16 @@ class PitchCanvas extends StatelessWidget {
                 borderRadius: 28,
               ),
             ),
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: PitchImageOverlay(
+                imageUrl: controller.cameraFrameImageUrl,
+                width: 96,
+                height: 72,
+                placeholderLabel: 'Kamera',
+              ),
+            ),
             if (showBench)
               Positioned(
                 left: 0,

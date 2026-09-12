@@ -16,6 +16,8 @@ class Tactic {
     this.homeFormation,
     this.awayFormation,
     this.sidesSwapped = false,
+    this.description = '',
+    this.category = '',
   });
 
   String id;
@@ -27,6 +29,15 @@ class Tactic {
   FormationType? awayFormation;
   bool sidesSwapped;
 
+  /// Free-text note shown in the Kayıtlar panel's info dialog - lets the
+  /// coach jot down what this saved moment/plan is for beyond just its name.
+  String description;
+
+  /// Free-text grouping label (e.g. "İlk Yarı", "Duran Top") entered
+  /// alongside the title/description when the record is created, shown in
+  /// the info dialog.
+  String category;
+
   Tactic copyWith({required String id, required String name}) => Tactic(
     id: id,
     name: name,
@@ -36,6 +47,8 @@ class Tactic {
     homeFormation: homeFormation,
     awayFormation: awayFormation,
     sidesSwapped: sidesSwapped,
+    description: description,
+    category: category,
   );
 
   Map<String, dynamic> toJson() => {
@@ -47,6 +60,8 @@ class Tactic {
     'homeFormation': homeFormation?.name,
     'awayFormation': awayFormation?.name,
     'sidesSwapped': sidesSwapped,
+    'description': description,
+    'category': category,
   };
 
   factory Tactic.fromJson(Map<String, dynamic> json) => Tactic(
@@ -68,5 +83,7 @@ class Tactic {
         ? FormationType.values.byName(json['awayFormation'] as String)
         : null,
     sidesSwapped: json['sidesSwapped'] as bool? ?? false,
+    description: json['description'] as String? ?? '',
+    category: json['category'] as String? ?? '',
   );
 }

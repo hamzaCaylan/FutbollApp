@@ -126,7 +126,7 @@ class DashboardScreen extends StatelessWidget {
                     children: [
                       SizedBox(height: 440, child: hero),
                       const SizedBox(height: 20),
-                      browse,
+                      SizedBox(height: 440, child: browse),
                       const SizedBox(height: 20),
                       SizedBox(height: 300, child: cards),
                     ],

@@ -350,6 +350,21 @@ class _PitchScreenState extends State<PitchScreen> {
   Future<void> _handleRenameRecord(String id, String currentName) =>
       showRenameRecordDialog(context, _controller, id, currentName);
 
+  /// The Kayıtlar panel's per-record info (ⓘ) action.
+  Future<void> _handleRecordInfo(
+    String id,
+    String currentName,
+    String currentDescription,
+    String currentCategory,
+  ) => showTacticInfoDialog(
+    context,
+    _controller,
+    id,
+    currentName,
+    currentDescription,
+    currentCategory,
+  );
+
   /// Lets the user save the currently drawn shapes (or just the selected
   /// ones) as a reusable, named template independent of any single Tactic,
   /// and browse/apply/delete previously saved templates.
@@ -407,6 +422,19 @@ class _PitchScreenState extends State<PitchScreen> {
       return;
     }
     _controller.cycleCard(ids.first);
+  }
+
+  void _handleNationality() {
+    final ids = _controller.selectedPlayerIds;
+    if (ids.isEmpty) {
+      _showMessage('Uyruk vermek için önce bir oyuncu seçin.');
+      return;
+    }
+    if (ids.length > 1) {
+      _showMessage('Uyruk vermek için tek bir oyuncu seçin.');
+      return;
+    }
+    _controller.cycleNationality(ids.first);
   }
 
   /// Taktikler's only job is opening/closing the toolbar - it never cancels
@@ -652,7 +680,7 @@ class _PitchScreenState extends State<PitchScreen> {
       overSquadLimit: _controller.isOverSquadLimit(player),
       isSelected: _controller.selectedPlayerIds.contains(player.id),
       isGroupSelected: isGroupSelected,
-      jerseyImagePath: _controller.jerseyImage,
+      jerseyImagePath: _controller.jerseyImageFor(player),
       onTap: () => _handlePlayerTapOnPitch(player),
       onDoubleTap: () => _showRenamePlayerDialog(player),
       onDragEnd: (details) => _handlePlayerDragEnd(player, details),
@@ -765,6 +793,7 @@ class _PitchScreenState extends State<PitchScreen> {
                                   onDelete: _handleDelete,
                                   onCaptain: _handleCaptain,
                                   onCard: _handleCard,
+                                  onNationality: _handleNationality,
                                   onAddNote: () => _showMessage(
                                     'Not ekleme özelliği yakında.',
                                   ),
@@ -797,6 +826,7 @@ class _PitchScreenState extends State<PitchScreen> {
                                   controller: controller,
                                   onSaveAsNew: _handleSaveRecordAsNew,
                                   onRename: _handleRenameRecord,
+                                  onInfo: _handleRecordInfo,
                                   compact: _sidePanelCollapsed,
                                 ),
                                 _SidePanel.tools ||

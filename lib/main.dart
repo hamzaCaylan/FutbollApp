@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,6 +15,19 @@ void main() {
   // context menu out of the way, or it would pop up over the app instead.
   if (kIsWeb) {
     BrowserContextMenu.disableContextMenu();
+  }
+  // The pitch is far too wide to read in portrait, so phones/tablets run
+  // this app landscape-only - mirrors android/AndroidManifest.xml's
+  // screenOrientation and ios/Info.plist's UISupportedInterfaceOrientations,
+  // which already restrict launch orientation at the OS level; this call
+  // additionally locks rotation while the app is running.
+  if (!kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS)) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
   runApp(const MyApp());
 }

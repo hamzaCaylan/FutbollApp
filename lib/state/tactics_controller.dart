@@ -146,6 +146,25 @@ class TacticsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The jersey a given player wears on the pitch. With both teams shown
+  /// (22 - "1. 11" home / "2. 11" away, each with its own captain), each
+  /// side gets its own outfield kit and its own distinct goalkeeper kit
+  /// instead of every player sharing the single Ayarlar-picked [jerseyImage]:
+  /// home outfield -> forma0, away outfield -> forma4, home keeper ->
+  /// forma7, away keeper -> forma8. With only one team shown, every player
+  /// (goalkeeper included) keeps using the plain [jerseyImage] setting, same
+  /// as before.
+  String? jerseyImageFor(Player player) {
+    if (!showBothTeams) return jerseyImage;
+    final isGoalkeeper = player.position == 'GK';
+    if (player.team == 'home') {
+      return isGoalkeeper
+          ? 'assets/forma/forma7.png'
+          : 'assets/forma/forma0.png';
+    }
+    return isGoalkeeper ? 'assets/forma/forma8.png' : 'assets/forma/forma4.png';
+  }
+
   /// The balls offered in the Ayarlar dialog's "Top görseli" picker.
   static const List<String> ballImageOptions = [
     'assets/forma/ball.png',
@@ -181,6 +200,17 @@ class TacticsController extends ChangeNotifier {
 
   void setChannelIconImageUrl(String? url) {
     channelIconImageUrl = (url == null || url.trim().isEmpty)
+        ? null
+        : url.trim();
+    notifyListeners();
+  }
+
+  /// The broadcaster's camera frame shown bottom-right over the pitch. Also
+  /// a plain image URL, chosen from the Ayarlar dialog.
+  String? cameraFrameImageUrl;
+
+  void setCameraFrameImageUrl(String? url) {
+    cameraFrameImageUrl = (url == null || url.trim().isEmpty)
         ? null
         : url.trim();
     notifyListeners();
@@ -387,6 +417,48 @@ class TacticsController extends ChangeNotifier {
       'red' => 'none',
       _ => 'yellow',
     };
+    notifyListeners();
+  }
+
+  /// Cycles [id]'s nationality status local -> foreignU23 -> foreignOver23
+  /// -> local, shown as a small colored dot next to their name label.
+  void cycleNationality(String id) {
+    final player = players.firstWhere((p) => p.id == id);
+    player.nationalityStatus = switch (player.nationalityStatus) {
+      'local' => 'foreignU23',
+      'foreignU23' => 'foreignOver23',
+      _ => 'local',
+    };
+    notifyListeners();
+  }
+
+  /// Id of the player whose detail page (Dash1Screen) is currently being
+  /// viewed from MenuPlayer - ephemeral UI navigation state, not persisted
+  /// in toAppStateJson/loadAppStateJson and not part of any Tactic snapshot.
+  String? viewingPlayerId;
+
+  void viewPlayerDetail(String playerId) {
+    viewingPlayerId = playerId;
+    notifyListeners();
+  }
+
+  /// Batch-updates the optional bio fields shown on a player's detail page,
+  /// entered from the Oyuncular editor - each argument fully replaces the
+  /// current value, including clearing it back to null/unset.
+  void updatePlayerBio(
+    String id, {
+    String? photoUrl,
+    int? heightCm,
+    int? weightKg,
+    int? birthYear,
+    String? club,
+  }) {
+    final player = players.firstWhere((p) => p.id == id);
+    player.photoUrl = photoUrl;
+    player.heightCm = heightCm;
+    player.weightKg = weightKg;
+    player.birthYear = birthYear;
+    player.club = club;
     notifyListeners();
   }
 
@@ -1851,6 +1923,8 @@ class TacticsController extends ChangeNotifier {
       homeFormation: homeFormation,
       awayFormation: awayFormation,
       sidesSwapped: sidesSwapped,
+      description: tactics[index].description,
+      category: tactics[index].category,
     );
   }
 
@@ -1904,7 +1978,11 @@ class TacticsController extends ChangeNotifier {
     tactics.add(tactic);
     currentTacticId = id;
     _loadTactic(tactic);
-    notifyListeners();
+    // _buildRoster() lays players out in the formation's raw half-pitch
+    // slots; reapply the formation now so a single-team plan (the default)
+    // gets applyFormation's full-pitch stretch instead of staying confined
+    // to the left half.
+    resetPositions();
   }
 
   void duplicateTactic(String id) {
@@ -1923,12 +2001,18 @@ class TacticsController extends ChangeNotifier {
   /// in [tactics] and switches to it - a "Save As" for the Kayıtlar panel,
   /// so a coach can bookmark a specific moment/plan without losing the one
   /// they started from.
-  void saveCurrentAsNew(String name) {
+  void saveCurrentAsNew(
+    String name, {
+    String description = '',
+    String category = '',
+  }) {
     if (name.trim().isEmpty) return;
     _snapshotIntoCurrentTactic();
     final source = tactics.firstWhere((t) => t.id == currentTacticId);
     final newId = DateTime.now().microsecondsSinceEpoch.toString();
-    final copy = source.copyWith(id: newId, name: name.trim());
+    final copy = source.copyWith(id: newId, name: name.trim())
+      ..description = description.trim()
+      ..category = category.trim();
     tactics.add(copy);
     currentTacticId = newId;
     _loadTactic(copy);
@@ -2004,6 +2088,22 @@ class TacticsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The Kayıtlar panel's info dialog "Kaydet" button: updates a saved
+  /// record's title and description together.
+  void updateTacticInfo(
+    String id, {
+    required String name,
+    required String description,
+    required String category,
+  }) {
+    if (name.trim().isEmpty) return;
+    final tactic = tactics.firstWhere((t) => t.id == id);
+    tactic.name = name.trim();
+    tactic.description = description.trim();
+    tactic.category = category.trim();
+    notifyListeners();
+  }
+
   void switchTactic(String id) {
     if (id == currentTacticId) return;
     _snapshotIntoCurrentTactic();
@@ -2069,6 +2169,7 @@ class TacticsController extends ChangeNotifier {
         'ballImage': ballImage,
         'adBannerImageUrl': adBannerImageUrl,
         'channelIconImageUrl': channelIconImageUrl,
+        'cameraFrameImageUrl': cameraFrameImageUrl,
       },
       'camera': {'zoom': 1.0, 'offsetX': 0.0, 'offsetY': 0.0},
     };
@@ -2150,6 +2251,7 @@ class TacticsController extends ChangeNotifier {
     }
     adBannerImageUrl = settings['adBannerImageUrl'] as String?;
     channelIconImageUrl = settings['channelIconImageUrl'] as String?;
+    cameraFrameImageUrl = settings['cameraFrameImageUrl'] as String?;
 
     selectedPlayerIds = {};
     selectedDrawingIndices = {};
@@ -2187,6 +2289,8 @@ class TacticsController extends ChangeNotifier {
           homeFormation: homeFormation,
           awayFormation: awayFormation,
           sidesSwapped: sidesSwapped,
+          description: tactics[index].description,
+          category: tactics[index].category,
         );
       }
     } else {
@@ -2231,6 +2335,7 @@ class TacticsController extends ChangeNotifier {
         'ballImage': ballImage,
         'adBannerImageUrl': adBannerImageUrl,
         'channelIconImageUrl': channelIconImageUrl,
+        'cameraFrameImageUrl': cameraFrameImageUrl,
         'homeColor': homeColor.toARGB32(),
         'awayColor': awayColor.toARGB32(),
         'drawingColor': drawingColor.toARGB32(),
@@ -2276,6 +2381,7 @@ class TacticsController extends ChangeNotifier {
     }
     adBannerImageUrl = settings['adBannerImageUrl'] as String?;
     channelIconImageUrl = settings['channelIconImageUrl'] as String?;
+    cameraFrameImageUrl = settings['cameraFrameImageUrl'] as String?;
     // squadSize/showBothTeams are deliberately never restored here - every
     // launch should start at the 11 · Tek takım default view regardless of
     // what was last selected, instead of remembering it across restarts.
@@ -2363,6 +2469,11 @@ class TacticsController extends ChangeNotifier {
     final homeSlots = FormationType.f433.slots;
     for (var i = 0; i < homeSlots.length; i++) {
       final slot = homeSlots[i];
+      // The starting ST gets a real sample bio (photo + physical/career
+      // facts, matching a real footballer) so the MenuPlayer -> Dash1
+      // detail page has at least one fully-realized example out of the
+      // box, instead of every fresh roster showing "-" placeholders.
+      final isSampleBioPlayer = slot.label == 'ST';
       list.add(
         Player(
           id: 'home-$i',
@@ -2373,6 +2484,11 @@ class TacticsController extends ChangeNotifier {
           x: slot.x,
           y: slot.y,
           isCaptain: i == 6,
+          photoUrl: isSampleBioPlayer ? 'assets/dashboard/v3.png' : null,
+          heightCm: isSampleBioPlayer ? 190 : null,
+          weightKg: isSampleBioPlayer ? 75 : null,
+          birthYear: isSampleBioPlayer ? 2000 : null,
+          club: isSampleBioPlayer ? 'Beşiktaş JK' : null,
         ),
       );
     }
